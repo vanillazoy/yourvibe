@@ -1,0 +1,45 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>{{ room.title }}</title>
+<style>
+  body { font-family: system-ui; max-width: 900px; margin: 32px auto; line-height: 1.6; }
+  header { text-align: center; margin-bottom: 20px; }
+  .cover { width: 200px; height: 200px; object-fit: cover; border-radius: 12px; box-shadow: 0 0 10px rgba(0,0,0,0.2); }
+  form { margin: 12px 0; }
+  input, button { padding: 8px 12px; border-radius: 8px; border: 1px solid #ccc; }
+  button { cursor: pointer; }
+  button.danger { border-color: red; color: red; }
+  button:hover { background: #f5f5f5; }
+</style>
+
+<header>
+  <h1>{{ room.title }}</h1>
+  {% if room.cover %}
+    <img src="{{ room.cover }}" class="cover" alt="cover" />
+  {% endif %}
+  <p>분위기: {{ room.tag }}</p>
+
+  <!-- 제목 수정 -->
+  <form action="/room/{{ room_id }}/rename" method="post">
+    <input name="new_title" placeholder="새 제목 입력" required>
+    <button type="submit">제목 수정</button>
+  </form>
+
+  <!-- 방 삭제 -->
+  <form action="/room/{{ room_id }}/delete" method="post" onsubmit="return confirm('정말 삭제할까요?');">
+    <button class="danger" type="submit">방 삭제</button>
+  </form>
+
+  <a href="/rooms">← 방 목록으로</a>
+</header>
+
+<hr>
+
+<h2>🎵 플레이리스트</h2>
+<ul>
+  {% for t in room.playlist %}
+    <li>{{ t.title }} - {{ t.artist }}</li>
+  {% else %}
+    <li>아직 곡이 없습니다.</li>
+  {% endfor %}
+</ul>

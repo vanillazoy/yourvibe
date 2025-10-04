@@ -1,0 +1,36 @@
+{
+  "89dbc143": {
+    "title": "Gifu",
+    "cover": "/static/89dbc143_cover.png",
+    "tag": "🌃 밤",
+    "playlist": [
+      {
+        "title": "Giyu's Demon Slayer Mark (from \"Demon Slayer: Infinity Castle\") [Cover]",
+        "artist": "Diego Mitre",
+        "moods": []
+      }
+    ]
+  },
+  "admin": {
+    "rooms": {}
+  },
+  "vanillazoy": {
+    "rooms": {
+      "754bb54f": {
+        "title": "dreamy",
+        "cover": "/static/vanillazoy_754bb54f_cover.png",
+        "tag": "🌃 밤",
+        "playlist": [
+          {
+            "title": "Idea 25",
+            "artist": "Andrea Vanzo & Gibran Alcocer",
+            "moods": []
+          }
+        ]
+      }
+    }
+  },
+  "vanilla": {
+    "rooms": {}
+  }
+}

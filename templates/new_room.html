@@ -1,0 +1,23 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>새 방 만들기</title>
+<style>
+  body { font-family: system-ui; max-width:600px; margin:40px auto; line-height:1.6; }
+  input, button, select { padding:10px; border-radius:8px; border:1px solid #ccc; }
+</style>
+<h1>🆕 새 방 만들기</h1>
+
+<form action="/create" method="post" enctype="multipart/form-data">
+  <label>방 제목: <input type="text" name="title" required></label><br>
+  <label>분위기 태그:
+    <select name="tag" required>
+      <option value="🌃 밤">🌃 밤</option>
+      <option value="📚 공부">📚 공부</option>
+      <option value="🔥 신남">🔥 신남</option>
+    </select>
+  </label><br>
+  <label>커버 이미지: <input type="file" name="cover" accept="image/*" required></label><br>
+  <button type="submit">생성하기</button>
+</form>
+
+<a href="/rooms">← 돌아가기</a>
