@@ -1,33 +1,52 @@
-🌈 프로젝트 개요
-YourVibe는 사용자가 직접 감성 플레이리스트를 만들고,
-각자만의 음악 취향과 분위기를 카드 형태로 표현할 수 있는 개인형 음악 공간입니다.
-AI 큐레이터 기능을 통해 플레이리스트 기반의 추천도 받을 수 있습니다.
+# 🎧 YourVibe  
+**나만의 감성 플레이리스트 공간 (FastAPI + Tailwind UI)**  
+
+---
+
+## 🌈 프로젝트 개요
+> **YourVibe**는 사용자가 직접 감성 플레이리스트를 만들고,  
+> 각자만의 음악 취향과 분위기를 카드 형태로 표현할 수 있는 개인형 음악 공간입니다.  
+
+AI 큐레이터 기능을 통해 플레이리스트 기반의 추천도 받을 수 있습니다.  
 (현재는 데모용, 추후 OpenAI API 연동 예정)
-🏗️ 기술 스택
-구분	기술
-Backend	🐍 FastAPI, Python 3.11
-Frontend (템플릿)	🎨 TailwindCSS, HTML (Jinja2)
-Database	📁 JSON 파일 (rooms.json)
-Design	💎 Glassmorphism + 감성 다크모드
-AI	🤖 (예정) OpenAI API 기반 음악 추천 기능
-📂 폴더 구조
+
+---
+
+## 🏗️ 기술 스택
+
+| 구분 | 기술 |
+|------|------|
+| Backend | 🐍 **FastAPI**, Python 3.11 |
+| Frontend (템플릿) | 🎨 **TailwindCSS**, HTML (Jinja2) |
+| Database | 📁 JSON 파일 (`rooms.json`) |
+| Design | 💎 Glassmorphism + 감성 다크모드 |
+| AI | 🤖 (예정) OpenAI API 기반 음악 추천 기능 |
+
+---
+
+## 📂 폴더 구조
+
 yourvibe/
 │
-├── yourvibe_app.py          # FastAPI 메인 서버
-├── rooms.json               # 사용자별 방 데이터 저장
-├── runtime.txt              # (Railway 등 배포 환경용)
-├── requirements.txt         # 의존성 패키지
+├── yourvibe_app.py # FastAPI 메인 서버
+├── rooms.json # 사용자별 방 데이터 저장
+├── runtime.txt # (Railway 등 배포 환경용)
+├── requirements.txt # 의존성 패키지
 │
-├── templates/               # Jinja2 템플릿 폴더
-│   ├── login.html
-│   ├── rooms.html
-│   ├── room_detail.html
-│   └── new_room.html
+├── templates/ # Jinja2 템플릿 폴더
+│ ├── login.html
+│ ├── rooms.html
+│ ├── room_detail.html
+│ └── new_room.html
 │
-└── static/                  # 업로드된 커버 이미지 저장 폴더
-⚙️ 설치 및 실행 방법
-1️⃣ 가상환경 실행
-source .venv/bin/activate 
+└── static/ # 업로드된 커버 이미지 저장 폴더
+
+---
+
+## ⚙️ 설치 및 실행 방법
+
+### 1️⃣ 가상환경 실행
+source .venv/bin/activate
 2️⃣ 서버 실행
 uvicorn yourvibe_app:app --reload --port 8000
 ➡️ 브라우저에서
@@ -102,10 +121,10 @@ async def recommend_tracks(room_id: str):
 상세	플레이리스트 + AI 추천 버튼
 새 방	업로드형 폼 (이미지 / 제목 / 태그)
 🧠 참고
-FastAPI Docs → https://fastapi.tiangolo.com
-TailwindCSS → https://tailwindcss.com
-OpenAI API → https://platform.openai.com
-iTunes Search API → https://affiliate.itunes.apple.com/resources/documentation/itunes-store-web-service-search-api/
+FastAPI Docs
+TailwindCSS
+OpenAI API
+iTunes Search API
 🩵 제작자
 Flowiny (vanillazoy)
 감성과 기술의 경계를 탐색하는 개발자
