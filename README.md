@@ -201,7 +201,7 @@ async def recommend_tracks(room_id: str):
 ---
 
 ### 🪶 Git Push Routine (개발자용)
-
+```bash
 # ✅ Git Push 전 필수 점검 및 안전 순서
 
 # 1️⃣ 현재 상태 확인
