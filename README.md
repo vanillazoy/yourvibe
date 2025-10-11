@@ -198,6 +198,9 @@ async def recommend_tracks(room_id: str):
 
 💫 _Your vibe, your space. — 감성을 표현하는 나만의 음악 공간._
 
+---
+
+### 🪶 Git Push Routine (개발자용)
 
 # ✅ Git Push 전 필수 점검 및 안전 순서
 
@@ -231,4 +234,3 @@ git push origin main
 # GitHub > yourvibe 레포 > main 브랜치
 # ✅ templates / frontend / yourvibe_app.py / package.json 올라왔는지 확인
 # 🚫 node_modules / .env / .DS_Store 파일이 보이지 않으면 성공
-
