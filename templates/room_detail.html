@@ -1,45 +1,52 @@
-<!doctype html>
-<meta charset="utf-8">
-<title>{{ room.title }}</title>
-<style>
-  body { font-family: system-ui; max-width: 900px; margin: 32px auto; line-height: 1.6; }
-  header { text-align: center; margin-bottom: 20px; }
-  .cover { width: 200px; height: 200px; object-fit: cover; border-radius: 12px; box-shadow: 0 0 10px rgba(0,0,0,0.2); }
-  form { margin: 12px 0; }
-  input, button { padding: 8px 12px; border-radius: 8px; border: 1px solid #ccc; }
-  button { cursor: pointer; }
-  button.danger { border-color: red; color: red; }
-  button:hover { background: #f5f5f5; }
-</style>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>{{ room.title }} | YourVibe</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    async function getAIRecommendations(roomId) {
+      const res = await fetch(`/api/${roomId}/recommend`, { method: "POST" });
+      const data = await res.json();
+      alert("🎵 AI 추천 결과:\n\n" + data.recommendations.join("\\n"));
+    }
+  </script>
+</head>
+<body class="bg-[#0f172a] text-white min-h-screen flex flex-col items-center">
+  <header class="flex justify-between items-center w-full max-w-5xl p-6">
+    <a href="/rooms" class="text-sky-400 hover:text-teal-300 transition">← 돌아가기</a>
+    <form action="/room/{{ room_id }}/delete" method="post" onsubmit="return confirm('정말 삭제하시겠어요?')">
+      <button class="text-gray-400 hover:text-red-400 text-sm">삭제</button>
+    </form>
+  </header>
 
-<header>
-  <h1>{{ room.title }}</h1>
-  {% if room.cover %}
-    <img src="{{ room.cover }}" class="cover" alt="cover" />
-  {% endif %}
-  <p>분위기: {{ room.tag }}</p>
+  <main class="w-full max-w-4xl p-8 text-center">
+    <div class="bg-white/10 backdrop-blur-lg p-8 rounded-3xl border border-white/10 shadow-xl mb-10">
+      <img src="{{ room.cover }}" alt="cover" class="w-64 h-64 object-cover rounded-2xl mx-auto mb-6" />
+      <h1 class="text-3xl font-bold text-teal-300 mb-2">{{ room.title }}</h1>
+      <p class="text-gray-400">{{ room.tag }}</p>
+    </div>
 
-  <!-- 제목 수정 -->
-  <form action="/room/{{ room_id }}/rename" method="post">
-    <input name="new_title" placeholder="새 제목 입력" required>
-    <button type="submit">제목 수정</button>
-  </form>
+    <section>
+      <h2 class="text-xl font-semibold mb-4 text-sky-300">🎶 플레이리스트</h2>
+      <ul class="space-y-3">
+        {% for t in room.playlist %}
+        <li class="bg-white/5 p-3 rounded-lg border border-white/10">
+          <span class="font-medium">{{ t.title }}</span>
+          <span class="text-gray-400 text-sm"> - {{ t.artist }}</span>
+        </li>
+        {% else %}
+        <p class="text-gray-500">곡이 없습니다 😢</p>
+        {% endfor %}
+      </ul>
+    </section>
 
-  <!-- 방 삭제 -->
-  <form action="/room/{{ room_id }}/delete" method="post" onsubmit="return confirm('정말 삭제할까요?');">
-    <button class="danger" type="submit">방 삭제</button>
-  </form>
-
-  <a href="/rooms">← 방 목록으로</a>
-</header>
-
-<hr>
-
-<h2>🎵 플레이리스트</h2>
-<ul>
-  {% for t in room.playlist %}
-    <li>{{ t.title }} - {{ t.artist }}</li>
-  {% else %}
-    <li>아직 곡이 없습니다.</li>
-  {% endfor %}
-</ul>
+    <button
+      onclick="getAIRecommendations('{{ room_id }}')"
+      class="mt-10 bg-gradient-to-r from-teal-400 to-sky-400 px-6 py-3 rounded-xl hover:opacity-90 transition-all"
+    >
+      🤖 AI 추천받기
+    </button>
+  </main>
+</body>
+</html>

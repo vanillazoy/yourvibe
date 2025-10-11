@@ -1,12 +1,36 @@
-<!doctype html>
-<meta charset="utf-8">
-<title>로그인</title>
-<style>
-  body { font-family: system-ui; max-width:400px; margin:40px auto; text-align:center; }
-  input, button { padding:10px; border-radius:8px; border:1px solid #ccc; }
-</style>
-<h1>🎧 YourVibe 로그인</h1>
-<form action="/login" method="post">
-  <input name="username" placeholder="사용자 이름" required>
-  <button type="submit">로그인</button>
-</form>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>YourVibe | 로그인</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#0f172a] text-white flex items-center justify-center h-screen">
+  <div class="relative flex flex-col items-center p-10 rounded-3xl bg-white/10 backdrop-blur-lg shadow-2xl border border-white/10 w-[400px]">
+    <div class="w-32 h-32 rounded-full bg-white/10 flex items-center justify-center mb-6 border border-white/20">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zM6 20v-1a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v1"/>
+      </svg>
+    </div>
+
+    <h1 class="text-3xl font-bold text-white mb-2">YourVibe</h1>
+    <p class="text-gray-400 text-sm mb-8">나만의 감성 플레이리스트 공간</p>
+
+    <form action="/login" method="post" class="w-full flex flex-col gap-3">
+      <input
+        type="text"
+        name="username"
+        placeholder="이름을 입력하세요"
+        class="p-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:ring-2 focus:ring-teal-300 outline-none"
+        required
+      />
+      <button
+        type="submit"
+        class="mt-2 py-3 rounded-xl bg-gradient-to-r from-teal-400 to-sky-500 font-semibold hover:opacity-90 transition"
+      >
+        Login
+      </button>
+    </form>
+  </div>
+</body>
+</html>

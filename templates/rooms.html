@@ -1,36 +1,41 @@
-<!doctype html>
-<meta charset="utf-8">
-<title>나의 플레이리스트 방</title>
-<style>
-  body { font-family: system-ui; max-width: 800px; margin: 40px auto; line-height: 1.6; }
-  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; }
-  .card { border: 1px solid #ddd; border-radius: 12px; padding: 12px; text-align: center; box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
-  .card img { width: 100%; height: 120px; object-fit: cover; border-radius: 8px; }
-  .card a { text-decoration: none; color: #333; font-weight: bold; display: block; margin-top: 8px; }
-  header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-  button { padding: 6px 10px; border-radius: 8px; border: 1px solid #ccc; background: #fff; cursor: pointer; }
-</style>
-
-<header>
-  <h1>🎵 나의 방 목록</h1>
-  <div>
-    <a href="/new"><button>➕ 새 방</button></a>
-    <a href="/logout"><button>🚪 로그아웃</button></a>
-  </div>
-</header>
-
-<div class="grid">
-  {% for rid, info in rooms.items() %}
-    <div class="card">
-      {% if info.cover %}
-        <img src="{{ info.cover }}" alt="cover">
-      {% else %}
-        <div style="height:120px; background:#f5f5f5; border-radius:8px; display:flex; align-items:center; justify-content:center;">No Cover</div>
-      {% endif %}
-      <a href="/room/{{ rid }}">{{ info.title }}</a>
-      <p>{{ info.tag }}</p>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>YourVibe | 홈</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#0f172a] text-white min-h-screen flex flex-col items-center">
+  <header class="flex justify-between items-center w-full max-w-6xl p-6">
+    <h1 class="text-2xl font-bold text-teal-300">🎧 YourVibe</h1>
+    <div class="flex items-center gap-4 text-gray-400">
+      <span>{{ username }}님</span>
+      <a href="/logout" class="hover:text-white">로그아웃</a>
     </div>
-  {% else %}
-    <p>아직 생성된 방이 없습니다.</p>
-  {% endfor %}
-</div>
+  </header>
+
+  <main class="w-full max-w-6xl p-6">
+    <div class="flex justify-between items-center mb-10">
+      <h2 class="text-xl font-semibold text-sky-300">✨ 나의 플레이리스트</h2>
+      <a href="/new" class="bg-gradient-to-r from-sky-400 to-teal-400 px-4 py-2 rounded-xl text-sm hover:opacity-90 transition">
+        + 새 방 만들기
+      </a>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      {% for room_id, room in rooms.items() %}
+      <a href="/room/{{ room_id }}" class="group relative rounded-3xl overflow-hidden bg-white/10 backdrop-blur-lg border border-white/10 shadow-xl hover:scale-[1.02] transition-all duration-300">
+        <img src="{{ room.cover }}" alt="{{ room.title }}" class="w-full h-56 object-cover opacity-90 group-hover:opacity-100 transition" />
+        <div class="absolute inset-0 bg-gradient-to-t from-[#0f172a]/80 to-transparent"></div>
+        <div class="absolute bottom-0 p-5">
+          <h3 class="text-lg font-semibold text-white">{{ room.title }}</h3>
+          <p class="text-sm text-gray-300">{{ room.tag }}</p>
+        </div>
+      </a>
+      {% else %}
+      <p class="text-gray-500 text-center col-span-full">아직 생성된 방이 없습니다 😌</p>
+      {% endfor %}
+    </div>
+  </main>
+</body>
+</html>

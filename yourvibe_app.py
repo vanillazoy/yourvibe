@@ -9,6 +9,9 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 import os, json, httpx
 from uuid import uuid4
+from fastapi.responses import JSONResponse
+from openai import OpenAI
+
 
 app = FastAPI()
 
@@ -193,3 +196,48 @@ async def add_track(request: Request, room_id: str):
     user_rooms[room_id]["playlist"].append(track)
     save_rooms()
     return {"ok": True}
+
+# -------------------------------
+# 🤖 AI 큐레이터 추천 기능
+# -------------------------------
+@app.post("/api/recommend")
+async def recommend(request: Request):
+    client = OpenAI()  # OPENAI_API_KEY 환경변수 필요
+    body = await request.json()
+    tracks = body.get("tracks", [])
+    track_titles = [f"{t['title']} - {t['artist']}" for t in tracks]
+
+    if not track_titles:
+        return JSONResponse({"error": "추천할 곡이 없습니다."}, status_code=400)
+
+    prompt = f"""
+    아래 곡들과 비슷한 감성의 음악 10곡을 추천해줘.
+    가능한 경우 한국어 또는 영어 곡을 섞어서 제시해줘.
+    곡 리스트: {', '.join(track_titles)}
+    """
+
+    try:
+        res = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[{"role": "user", "content": prompt}],
+        )
+        result = res.choices[0].message.content
+        return {"recommendations": result}
+    except Exception as e:
+        return JSONResponse({"error": str(e)}, status_code=500)
+
+# -------------------------------
+# 🤖 AI 추천 기능 (데모용)
+# -------------------------------
+@app.post("/api/{room_id}/recommend")
+async def recommend_tracks(room_id: str):
+    # 실제로는 OpenAI API 연동 or AI 모델 기반 추천
+    # 현재는 데모용 가짜 데이터
+    demo = [
+        "Lauv - Paris in the Rain",
+        "HONNE - Day 1 ◑",
+        "The 1975 - Somebody Else",
+        "keshi - blue",
+        "Joji - Ew"
+    ]
+    return {"recommendations": demo}
