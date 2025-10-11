@@ -197,3 +197,38 @@ async def recommend_tracks(room_id: str):
 ---
 
 💫 _Your vibe, your space. — 감성을 표현하는 나만의 음악 공간._
+
+
+# ✅ Git Push 전 필수 점검 및 안전 순서
+
+# 1️⃣ 현재 상태 확인
+git status
+
+# 2️⃣ macOS 시스템 파일 무시 (.DS_Store)
+echo ".DS_Store" >> .gitignore
+git rm --cached .DS_Store 2>/dev/null || true
+
+# 3️⃣ node_modules, .env 무시 설정
+echo "node_modules/" >> .gitignore
+echo ".env" >> .gitignore
+
+# 4️⃣ 변경사항 스테이징 (node_modules 제외)
+git add .gitignore templates yourvibe_app.py frontend package.json package-lock.json
+
+# 5️⃣ 커밋
+git commit -m "🎨 Update UI templates & frontend (React + Tailwind setup)"
+
+# 6️⃣ 원격(main) 최신 내용 반영 (충돌 방지)
+git pull origin main --rebase
+
+# ⚠️ conflict(충돌)이 발생하면: 충돌 해결 후 아래 명령 실행
+# git rebase --continue
+
+# 7️⃣ 깃허브로 푸쉬
+git push origin main
+
+# 8️⃣ 결과 확인
+# GitHub > yourvibe 레포 > main 브랜치
+# ✅ templates / frontend / yourvibe_app.py / package.json 올라왔는지 확인
+# 🚫 node_modules / .env / .DS_Store 파일이 보이지 않으면 성공
+
