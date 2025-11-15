@@ -4,15 +4,91 @@
   <meta charset="UTF-8" />
   <title>{{ room.title }} | YourVibe</title>
   <script src="https://cdn.tailwindcss.com"></script>
+
   <script>
+    // 🔹 AI 추천 요청
     async function getAIRecommendations(roomId) {
-      const res = await fetch(`/api/${roomId}/recommend`, { method: "POST" });
-      const data = await res.json();
-      alert("🎵 AI 추천 결과:\n\n" + data.recommendations.join("\\n"));
+      const aiList = document.getElementById("ai-list");
+      aiList.innerHTML = "";
+      aiList.innerHTML = `<p class="text-gray-400 text-sm">AI가 곡을 추천 중입니다...</p>`;
+
+      try {
+        const res = await fetch(`/api/${roomId}/recommend`, {
+          method: "POST",
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          alert(data.error || "AI 추천 중 오류가 발생했어요.");
+          aiList.innerHTML = "";
+          return;
+        }
+
+        const songs = data.recommended_songs || [];
+        if (!songs.length) {
+          aiList.innerHTML = `<p class="text-gray-400 text-sm">추천 결과가 없어요.</p>`;
+          return;
+        }
+
+        // 추천 결과 카드 렌더링
+        aiList.innerHTML = "";
+        songs.forEach((song) => {
+          const card = document.createElement("button");
+          card.className =
+            "w-full text-left bg-white/5 hover:bg-white/10 transition border border-white/10 rounded-xl px-4 py-3 flex flex-col";
+          card.innerHTML = `
+            <span class="font-semibold text-sm text-teal-300">${song.title}</span>
+            <span class="text-xs text-gray-300">${song.artist}</span>
+            ${song.genre ? `<span class="text-[11px] text-gray-400 mt-1">${song.genre}</span>` : ""}
+            <span class="text-[11px] text-sky-400 mt-2">클릭하면 이 방 플레이리스트에 추가됩니다</span>
+          `;
+          card.addEventListener("click", () => {
+            addTrackFromAI(roomId, song.title, song.artist);
+          });
+          aiList.appendChild(card);
+        });
+      } catch (err) {
+        console.error(err);
+        alert("AI 추천 요청에 실패했어요.");
+        aiList.innerHTML = "";
+      }
+    }
+
+    // 🔹 AI 추천 카드 클릭 → 곡 추가
+    async function addTrackFromAI(roomId, title, artist) {
+      if (!confirm(`'${title} - ${artist}' 곡을 이 방에 추가할까요?`)) return;
+
+      try {
+        const res = await fetch(`/api/${roomId}/add`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            title: title,
+            artist: artist,
+            moods: [],  // 필요하면 나중에 무드 태그도 같이 보낼 수 있음
+          }),
+        });
+
+        const data = await res.json();
+        if (!res.ok || !data.ok) {
+          alert(data.error || "곡 추가에 실패했어요.");
+          return;
+        }
+
+        alert("플레이리스트에 곡이 추가됐어요!");
+        // 간단하게 새로고침해서 목록 갱신
+        window.location.reload();
+      } catch (err) {
+        console.error(err);
+        alert("서버와 통신 중 문제가 발생했어요.");
+      }
     }
   </script>
 </head>
+
 <body class="bg-[#0f172a] text-white min-h-screen flex flex-col items-center">
+  <!-- 상단 헤더 -->
   <header class="flex justify-between items-center w-full max-w-5xl p-6">
     <a href="/rooms" class="text-sky-400 hover:text-teal-300 transition">← 돌아가기</a>
     <form action="/room/{{ room_id }}/delete" method="post" onsubmit="return confirm('정말 삭제하시겠어요?')">
@@ -20,33 +96,54 @@
     </form>
   </header>
 
-  <main class="w-full max-w-4xl p-8 text-center">
-    <div class="bg-white/10 backdrop-blur-lg p-8 rounded-3xl border border-white/10 shadow-xl mb-10">
+  <main class="w-full max-w-4xl p-8 text-center space-y-10">
+    <!-- 방 정보 카드 -->
+    <section class="bg-white/10 backdrop-blur-lg p-8 rounded-3xl border border-white/10 shadow-xl">
       <img src="{{ room.cover }}" alt="cover" class="w-64 h-64 object-cover rounded-2xl mx-auto mb-6" />
       <h1 class="text-3xl font-bold text-teal-300 mb-2">{{ room.title }}</h1>
       <p class="text-gray-400">{{ room.tag }}</p>
-    </div>
-
-    <section>
-      <h2 class="text-xl font-semibold mb-4 text-sky-300">🎶 플레이리스트</h2>
-      <ul class="space-y-3">
-        {% for t in room.playlist %}
-        <li class="bg-white/5 p-3 rounded-lg border border-white/10">
-          <span class="font-medium">{{ t.title }}</span>
-          <span class="text-gray-400 text-sm"> - {{ t.artist }}</span>
-        </li>
-        {% else %}
-        <p class="text-gray-500">곡이 없습니다 😢</p>
-        {% endfor %}
-      </ul>
     </section>
 
-    <button
-      onclick="getAIRecommendations('{{ room_id }}')"
-      class="mt-10 bg-gradient-to-r from-teal-400 to-sky-400 px-6 py-3 rounded-xl hover:opacity-90 transition-all"
-    >
-      🤖 AI 추천받기
-    </button>
+    <!-- 기존 플레이리스트 -->
+    <section class="text-left">
+      <h2 class="text-xl font-semibold mb-4 text-sky-300">🎶 현재 플레이리스트</h2>
+      {% if room.playlist %}
+      <ul class="space-y-3">
+        {% for t in room.playlist %}
+        <li class="bg-white/5 p-3 rounded-lg border border-white/10 flex justify-between items-center">
+          <div>
+            <span class="font-medium">{{ t.title }}</span>
+            <span class="text-gray-400 text-sm"> - {{ t.artist }}</span>
+          </div>
+        </li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <p class="text-gray-500">곡이 없습니다 😢</p>
+      {% endif %}
+    </section>
+
+    <!-- AI 추천 영역 -->
+    <section class="text-left">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-xl font-semibold text-sky-300">🤖 AI 추천받기</h2>
+        <button
+          onclick="getAIRecommendations('{{ room_id }}')"
+          class="bg-gradient-to-r from-teal-400 to-sky-400 px-4 py-2 rounded-xl text-sm hover:opacity-90 transition-all"
+        >
+          AI에게 추천 받기
+        </button>
+      </div>
+
+      <p class="text-xs text-gray-400 mb-3">
+        버튼을 누르면 이 방의 곡들을 기반으로 비슷한 감성의 노래를 추천해요.<br />
+        아래 카드 하나를 클릭하면 곡이 바로 플레이리스트에 추가됩니다.
+      </p>
+
+      <div id="ai-list" class="grid gap-3">
+        <!-- JS에서 AI 추천 카드들이 들어오는 자리 -->
+      </div>
+    </section>
   </main>
 </body>
 </html>
